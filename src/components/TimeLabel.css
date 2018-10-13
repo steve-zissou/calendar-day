@@ -1,4 +1,6 @@
 #timelabel {
-  padding-bottom: 40px;
+  padding-bottom: 41px;
+  position: relative;
   border-top: solid 1px teal;
+  z-index: 0;
 }

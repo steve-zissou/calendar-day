@@ -1,4 +1,8 @@
 #timelist {
   height: 100vh;
+  width: calc(100vw - 100px);
+  flex-grow: 1;
   padding-left: 30px;
+  position: relative;
+  z-index: 0;
 }
