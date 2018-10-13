@@ -5,7 +5,7 @@ import uuid from 'uuid/v1';
 
 import './index.css';
 
-import App from './App';
+import App from './components/App';
 
 // const events = [{start: 30, end: 120}, {start: 300, end: 330}, {start: 290, end: 330}]
 
