@@ -4,11 +4,9 @@
   border-left: solid;
   background-color: rgb(176,224,230,0.3);
   height: 60px;
-  left: 80px;
   padding-left: 10px;
   padding-top: 0px;
   position: absolute;
-  top: 9px;
   width: calc(85vw);
   z-index: 1;
 }

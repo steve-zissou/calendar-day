@@ -1,4 +1,22 @@
-import { getNumberOfColumns, isOverlapping } from './utils';
+import { getNumberOfColumns, getColumnNumber, isOverlapping } from './utils';
+
+describe('getColumnNumber', () => {
+  it('should return 1 when order is less than overlap orders', () => {
+    expect(getColumnNumber(2, [3, 4])).toEqual(1);
+  });
+
+  it('should return 2 when order is between overlap orders', () => {
+    expect(getColumnNumber(2, [1, 4])).toEqual(2);
+  });
+
+  it('should return 2 when order is greater than overlap order', () => {
+    expect(getColumnNumber(21, [18])).toEqual(2);
+  });
+
+  it('should return 3 when order is greater than 2 overlap orders', () => {
+    expect(getColumnNumber(5, [1, 4])).toEqual(3);
+  });
+});
 
 describe('isOverlapping', () => {
   it('should return false when there are no existing events', () => {

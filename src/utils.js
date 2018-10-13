@@ -36,3 +36,30 @@ export function getNumberOfColumns(events) {
 
   return columns.length;
 }
+
+/**
+ *
+ * @param {object} event
+ * @param {array} existingEvents
+ * @returns {integer}
+ */
+export function getOverlappingEvents(event, existingEvents) {
+  const { start, end } = event;
+
+  return existingEvents.filter(existingEvent => (
+    existingEvent.order !== event.order
+      && (existingEvent.start === start
+      || existingEvent.end === end
+      || (existingEvent.start >= start && existingEvent.start < end)
+      || (existingEvent.end > start && existingEvent.end <= end))
+  ));
+}
+
+/**
+ * 
+ * @param {*} order 
+ * @param {*} overlapOrders 
+ */
+export function getColumnNumber(order, overlapOrders) {
+  return overlapOrders.filter(overlap => overlap < order).length + 1;
+}

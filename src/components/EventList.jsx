@@ -1,13 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import uuidV1 from 'uuid/v1';
 
+import { getColumnNumber, getOverlappingEvents } from '../utils';
 import Event from './Event';
+
+import './EventList.css';
 
 
 export default class EventList extends React.PureComponent {
   static prepareEvents(events) {
-    return events.map(item => Object.assign({}, item, { uuid: uuidV1() }));
+    const withOrder = events.map((item, index) => Object.assign({}, item, { order: index }));
+    withOrder.forEach((entry) => {
+      const overlaps = getOverlappingEvents(entry, withOrder);
+      entry.totalColumns = overlaps.length + 1;
+      entry.column = getColumnNumber(entry.order, overlaps.map(overlap => overlap.order));
+    });
+
+    return withOrder;
   }
 
   render() {
@@ -15,8 +24,18 @@ export default class EventList extends React.PureComponent {
     const prepared = EventList.prepareEvents(events);
 
     return (
-      <ul>
-        {prepared.map(({ end, start, uuid }) => <Event key={uuid} start={start} end={end} />)}
+      <ul id="eventlist">
+        {prepared.map(({
+          column, end, start, order, totalColumns,
+        }) => (
+          <Event
+            key={order}
+            start={start}
+            end={end}
+            column={column}
+            totalColumns={totalColumns}
+          />
+        ))}
       </ul>
     );
   }

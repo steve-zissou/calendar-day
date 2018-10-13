@@ -11,8 +11,12 @@ export default class Event extends React.PureComponent {
     return `${end - start}px`;
   }
 
-  static getLeft(column) {
-    return '80px';
+  static getLeft(column, columnCount) {
+    if (column === 1) {
+      return '0px';
+    }
+    const multiplier = column - 1;
+    return `calc(${multiplier}*(85vw/${columnCount}))`;
   }
 
   static getTime(start) {
@@ -25,8 +29,7 @@ export default class Event extends React.PureComponent {
   }
 
   static getTop(start) {
-    const offset = 9;
-    return `${offset + start}px`;
+    return `${start - 16}px`;
   }
 
   static getWidth(columnCount) {
@@ -40,7 +43,7 @@ export default class Event extends React.PureComponent {
 
     const style = {
       height: Event.getHeight(start, end),
-      left: Event.getLeft(column),
+      left: Event.getLeft(column, totalColumns),
       top: Event.getTop(start),
       width: Event.getWidth(totalColumns),
     };
