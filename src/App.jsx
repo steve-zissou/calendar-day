@@ -10,7 +10,7 @@ export default class App extends React.PureComponent {
     const { events } = this.props;
     return (
       <ul className="App">
-        {events.map(item => <Event start={item.start} end={item.end} />)}
+        {events.map(({ end, start, uuid }) => <Event key={uuid} start={start} end={end} />)}
       </ul>
     );
   }
@@ -24,5 +24,6 @@ App.propTypes = {
   events: PropTypes.arrayOf(PropTypes.shape({
     end: PropTypes.number.isRequired,
     start: PropTypes.number.isRequired,
+    uuid: PropTypes.string.isRequired,
   })),
 };
