@@ -2,16 +2,21 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Event from './Event';
+import TimeList from './TimeList';
 
 import './App.css';
 
 export default class App extends React.PureComponent {
   render() {
     const { events } = this.props;
+
     return (
-      <ul className="App">
-        {events.map(({ end, start, uuid }) => <Event key={uuid} start={start} end={end} />)}
-      </ul>
+      <div id="app">
+        <TimeList start={9} end={18} />
+        <ul>
+          {events.map(({ end, start, uuid }) => <Event key={uuid} start={start} end={end} />)}
+        </ul>
+      </div>
     );
   }
 }
