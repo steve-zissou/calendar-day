@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+
+import Event from './Event';
+
 import './App.css';
 
 export default class App extends React.PureComponent {
@@ -7,7 +10,7 @@ export default class App extends React.PureComponent {
     const { events } = this.props;
     return (
       <ul className="App">
-        {events.map(item => <li>{`${item.start} -> ${item.end}`}</li>)}
+        {events.map(item => <Event start={item.start} end={item.end} />)}
       </ul>
     );
   }
