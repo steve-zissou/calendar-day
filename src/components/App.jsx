@@ -27,6 +27,5 @@ App.propTypes = {
   events: PropTypes.arrayOf(PropTypes.shape({
     end: PropTypes.number.isRequired,
     start: PropTypes.number.isRequired,
-    uuid: PropTypes.string.isRequired,
   })),
 };
