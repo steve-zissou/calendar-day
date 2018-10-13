@@ -1,11 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+
+import './Event.css';
+
 
 export default class Event extends React.PureComponent {
   render() {
     const { end, start } = this.props;
     return (
-      <li>{`${start} -> ${end}`}</li>
+      <ListItem button id="event">
+        <ListItemText primary={`${start} -> ${end}`} />
+      </ListItem>
     );
   }
 }
