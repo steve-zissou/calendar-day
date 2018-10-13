@@ -22,19 +22,17 @@ export function isOverlapping(event, existingEvents) {
  */
 export function getNumberOfColumns(events) {
   const columns = [];
-  for (const eventItem of events) {
-    let newColumn = true;
-    for (const column of columns) {
-      if (!isOverlapping(eventItem, column)) {
-        column.push(eventItem);
-        newColumn = false;
-        break;
-      }
-    }
-    if (newColumn) {
+
+  events.forEach((eventItem) => {
+    // find columns this event would fit into
+    const available = columns.filter(column => !isOverlapping(eventItem, column));
+
+    if (available.length) {
+      available[0].push(eventItem);
+    } else {
       columns.push([eventItem]);
     }
-  }
+  });
 
   return columns.length;
 }
