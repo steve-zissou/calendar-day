@@ -17,3 +17,5 @@ window.renderDay = function renderDay(events) {
   const uuidEvents = events.map(item => Object.assign({}, item, { uuid: uuid() }));
   ReactDOM.render(<App events={uuidEvents} />, document.getElementById('root'));
 };
+
+ReactDOM.render(<App />, document.getElementById('root'));
