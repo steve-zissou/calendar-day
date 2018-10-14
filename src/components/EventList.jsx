@@ -1,7 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { getColumnNumber, getOverlappingEvents } from '../utils';
+import {
+  getColumnNumber,
+  getMaxSimultaneousEvents,
+  getSimultaneousEvents,
+  getOverlappingEvents,
+} from '../utils';
 import Event from './Event';
 
 import './EventList.css';
@@ -12,8 +17,9 @@ export default class EventList extends React.PureComponent {
     const withOrder = events.map((item, index) => Object.assign({}, item, { order: index }));
     withOrder.forEach((entry) => {
       const overlaps = getOverlappingEvents(entry, withOrder);
-      entry.totalColumns = overlaps.length + 1;
-      entry.column = getColumnNumber(entry.order, overlaps.map(overlap => overlap.order));
+      const overlaps2 = getSimultaneousEvents(overlaps);
+      entry.totalColumns = getMaxSimultaneousEvents(overlaps) + 1;
+      entry.column = getColumnNumber(entry.order, overlaps2.map(overlap => overlap.order));
     });
 
     return withOrder;

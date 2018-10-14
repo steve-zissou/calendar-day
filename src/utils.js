@@ -1,43 +1,4 @@
 /**
- * Check if the event overlaps the existing events.
- * @param {object} event The event to check.
- * @param {array} existingEvents The existing events to check.
- * @returns {boolean}
- */
-export function isOverlapping(event, existingEvents) {
-  const { start, end } = event;
-
-  return existingEvents.some(existingEvent => (
-    existingEvent.start === start
-      || existingEvent.end === end
-      || (existingEvent.start >= start && existingEvent.start < end)
-      || (existingEvent.end > start && existingEvent.end <= end)
-  ));
-}
-
-/**
- * Get the number of columns needed to display the events
- * @param {array} events The events to display.
- * @returns {integer}
- */
-export function getNumberOfColumns(events) {
-  const columns = [];
-
-  events.forEach((eventItem) => {
-    // find columns this event would fit into
-    const available = columns.filter(column => !isOverlapping(eventItem, column));
-
-    if (available.length) {
-      available[0].push(eventItem);
-    } else {
-      columns.push([eventItem]);
-    }
-  });
-
-  return columns.length;
-}
-
-/**
  * Get the events which overlap the supplied event.
  * @param {object} event The event to check what overalps it.
  * @param {array} allEvents All other events
@@ -57,9 +18,25 @@ export function getOverlappingEvents(event, allEvents) {
 }
 
 /**
- * 
- * @param {*} order 
- * @param {*} overlapOrders 
+ * Get the maxiumum number of events that happen at the same time.
+ * @param {array} allOverlaps All events to check.
+ */
+export function getMaxSimultaneousEvents(allOverlaps) {
+  const counts = allOverlaps.map(event => getOverlappingEvents(event, allOverlaps).length);
+  return Math.max(...counts) + 1;
+}
+
+export function getSimultaneousEvents(allOverlaps) {
+  const max = getMaxSimultaneousEvents(allOverlaps);
+  const grouped = allOverlaps.map((event) => {
+    const matches = getOverlappingEvents(event, allOverlaps);
+    return [event, ...matches];
+  });
+  const overlaps = grouped.filter(group => group.length === max);
+
+  return overlaps[0] || [];
+}
+
 /**
  * Get the column number to use based on the order of this and other events.
  * @param {integer} order The order of the event to get the column number for.

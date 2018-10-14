@@ -1,4 +1,9 @@
-import { getColumnNumber, getNumberOfColumns, getOverlappingEvents, isOverlapping } from './utils';
+import {
+  getColumnNumber,
+  getOverlappingEvents,
+  getMaxSimultaneousEvents,
+  getSimultaneousEvents,
+} from './utils';
 
 describe('getColumnNumber', () => {
   it('should return 1 when order is less than overlap orders', () => {
@@ -50,83 +55,59 @@ describe('getOverlappingEvents', () => {
   });
 });
 
-describe('isOverlapping', () => {
-  it('should return false when there are no existing events', () => {
-    const event = { start: 0, end: 30 };
-    const events = [];
-    expect(isOverlapping(event, events)).toEqual(false);
+describe('getSimultaneousEvents', () => {
+  it('will return all events when they all overlap', () => {
+    const overlaps = [
+      { start: 300, end: 330, order: 1 },
+      { start: 300, end: 330, order: 4 },
+      { start: 30, end: 420, order: 5 },
+    ];
+    const result = getSimultaneousEvents(overlaps);
+    expect(result).toEqual(overlaps);
   });
 
-  it('should return false when the event starts at the end of existing events', () => {
-    const event = { start: 30, end: 60 };
-    const events = [{ start: 0, end: 30 }];
-    expect(isOverlapping(event, events)).toEqual(false);
-  });
-
-  it('should return true when the event has the same start as an existing event', () => {
-    const event = { start: 0, end: 60 };
-    const events = [{ start: 0, end: 30 }];
-    expect(isOverlapping(event, events)).toEqual(true);
-  });
-
-  it('should return true when the event has the same end as an existing event', () => {
-    const event = { start: 15, end: 30 };
-    const events = [{ start: 0, end: 30 }];
-    expect(isOverlapping(event, events)).toEqual(true);
-  });
-
-  it('should return true when the event encapsulates an existing event', () => {
-    const event = { start: 0, end: 60 };
-    const events = [{ start: 15, end: 30 }];
-    expect(isOverlapping(event, events)).toEqual(true);
-  });
-
-  it('should return true when the event starts after the start but before the end of the other', () => {
-    const event = { start: 45, end: 120 };
-    const events = [{ start: 0, end: 90 }];
-    expect(isOverlapping(event, events)).toEqual(true);
-  });
-
-  it('should return true when the event overlaps one but not both events', () => {
-    const event = { start: 60, end: 105 };
-    const events = [{ start: 0, end: 60 }, { start: 90, end: 120 }];
-    expect(isOverlapping(event, events)).toEqual(true);
+  it('will not return events when they don\'t overlap', () => {
+    const event1 = { start: 300, end: 330, order: 1 };
+    const event2 = { start: 420, end: 450, order: 2 };
+    const event3 = { start: 30, end: 420, order: 3 };
+    const overlaps = [event1, event2, event3];
+    const result = getSimultaneousEvents(overlaps);
+    expect(result).toEqual([event1, event3]);
   });
 });
 
-describe('getNumberOfColumns', () => {
-  it('should return 1 column for 1 event', () => {
-    const events = [{ start: 0, end: 30 }];
-    expect(getNumberOfColumns(events)).toEqual(1);
+describe('getMaxSimultaneousOverlaps', () => {
+  it('should return 2 when a maximum of 2 events overlap each other', () => {
+    const events = [
+      { start: 30, end: 120, order: 1 },
+      { start: 300, end: 330, order: 2 },
+      { start: 90, end: 120, order: 3 },
+    ];
+    const result = getMaxSimultaneousEvents(events);
+    expect(result).toEqual(2);
   });
 
-  it('should return 1 column for 2 non-overlapping event', () => {
-    const events = [{ start: 0, end: 30 }, { start: 30, end: 60 }];
-    expect(getNumberOfColumns(events)).toEqual(1);
+  it('should return 3 when a maximum of 3 events overlap each other', () => {
+    const events = [
+      { start: 30, end: 120, order: 1 },
+      { start: 300, end: 330, order: 2 },
+      { start: 290, end: 330, order: 3 },
+      { start: 90, end: 120, order: 4 },
+      { start: 300, end: 330, order: 5 },
+    ];
+    const result = getMaxSimultaneousEvents(events);
+    expect(result).toEqual(3);
   });
 
-  it('should return 2 columns for 2 events with the same start', () => {
-    const events = [{ start: 0, end: 30 }, { start: 0, end: 60 }];
-    expect(getNumberOfColumns(events)).toEqual(2);
-  });
-
-  it('should return 2 columns for 2 events with the same end', () => {
-    const events = [{ start: 0, end: 30 }, { start: 15, end: 30 }];
-    expect(getNumberOfColumns(events)).toEqual(2);
-  });
-
-  it('should return 2 columns for 2 events where one encapsulates the other', () => {
-    const events = [{ start: 15, end: 30 }, { start: 0, end: 60 }];
-    expect(getNumberOfColumns(events)).toEqual(2);
-  });
-
-  it('should return 2 columns for 2 events where one starts before the end of the other', () => {
-    const events = [{ start: 0, end: 90 }, { start: 45, end: 120 }];
-    expect(getNumberOfColumns(events)).toEqual(2);
-  });
-
-  it("should return 2 columns for 3 events where 2 don't overlap", () => {
-    const events = [{ start: 0, end: 90 }, { start: 45, end: 120 }, { start: 90, end: 120 }];
-    expect(getNumberOfColumns(events)).toEqual(2);
+  it('should return 1 when no events overlap each other', () => {
+    const noOverlaps = [
+      { start: 30, end: 120, order: 1 },
+      { start: 120, end: 150, order: 2 },
+      { start: 290, end: 330, order: 3 },
+      { start: 360, end: 420, order: 4 },
+      { start: 420, end: 450, order: 5 },
+    ];
+    const result = getMaxSimultaneousEvents(noOverlaps);
+    expect(result).toEqual(1);
   });
 });
