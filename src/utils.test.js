@@ -1,4 +1,4 @@
-import { getNumberOfColumns, getColumnNumber, isOverlapping } from './utils';
+import { getColumnNumber, getNumberOfColumns, getOverlappingEvents, isOverlapping } from './utils';
 
 describe('getColumnNumber', () => {
   it('should return 1 when order is less than overlap orders', () => {
@@ -15,6 +15,38 @@ describe('getColumnNumber', () => {
 
   it('should return 3 when order is greater than 2 overlap orders', () => {
     expect(getColumnNumber(5, [1, 4])).toEqual(3);
+  });
+});
+
+describe('getOverlappingEvents', () => {
+  const allEvents = [
+    { start: 30, end: 120, order: 1 },
+    { start: 300, end: 330, order: 2 },
+    { start: 290, end: 330, order: 3 },
+    { start: 360, end: 420, order: 4 },
+    { start: 300, end: 330, order: 5 },
+    { start: 30, end: 420, order: 6 },
+    { start: 480, end: 510, order: 7 },
+  ];
+
+  it('should return 1 when 1 event overlaps', () => {
+    const result = getOverlappingEvents(allEvents[0], allEvents);
+    expect(result.length).toEqual(1);
+  });
+
+  it('should return 3 when 3 events overlap', () => {
+    const result = getOverlappingEvents(allEvents[2], allEvents);
+    expect(result.length).toEqual(3);
+  });
+
+  it('should return 5 when 5 events overlap', () => {
+    const result = getOverlappingEvents(allEvents[5], allEvents);
+    expect(result.length).toEqual(5);
+  });
+
+  it('should return 0 when no events overlap', () => {
+    const result = getOverlappingEvents(allEvents[6], allEvents);
+    expect(result.length).toEqual(0);
   });
 });
 
