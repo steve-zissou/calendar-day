@@ -20,12 +20,19 @@ export function getOverlappingEvents(event, allEvents) {
 /**
  * Get the maxiumum number of events that happen at the same time.
  * @param {array} allOverlaps All events to check.
+ * @returns {integer}
  */
 export function getMaxSimultaneousEvents(allOverlaps) {
   const counts = allOverlaps.map(event => getOverlappingEvents(event, allOverlaps).length);
   return Math.max(...counts) + 1;
 }
 
+/**
+ * Get the events which overlap simultaneously.
+ * Used to work out how many columns are required to render.
+ * @param {array} allOverlaps All overlapping events.
+ * @returns {array}
+ */
 export function getSimultaneousEvents(allOverlaps) {
   const max = getMaxSimultaneousEvents(allOverlaps);
   const grouped = allOverlaps.map((event) => {
