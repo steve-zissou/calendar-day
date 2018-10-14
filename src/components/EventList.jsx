@@ -13,16 +13,24 @@ import './EventList.css';
 
 
 export default class EventList extends React.PureComponent {
+  /**
+   * Prepare the supplied events by adding order, column and totalColumns.
+   * @param {array} events The events to prepare.
+   * @returns {array}
+   */
   static prepareEvents(events) {
     const withOrder = events.map((item, index) => Object.assign({}, item, { order: index }));
-    withOrder.forEach((entry) => {
+    const prepared = withOrder.map((entry) => {
       const overlaps = getOverlappingEvents(entry, withOrder);
-      const overlaps2 = getSimultaneousEvents(overlaps);
-      entry.totalColumns = getMaxSimultaneousEvents(overlaps) + 1;
-      entry.column = getColumnNumber(entry.order, overlaps2.map(overlap => overlap.order));
+      const simultaneous = getSimultaneousEvents(overlaps);
+
+      return Object.assign({}, entry, {
+        totalColumns: getMaxSimultaneousEvents(overlaps) + 1,
+        column: getColumnNumber(entry.order, simultaneous.map(overlap => overlap.order)),
+      });
     });
 
-    return withOrder;
+    return prepared;
   }
 
   render() {
